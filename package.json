@@ -1,0 +1,30 @@
+{
+    "name": "lilli",
+    "version": "0.1.1",
+    "description": "Tiny SQL-styled JSON ORM",
+    "author": "Aleix Caminal",
+    "license": "MIT",
+    "main": "index.js",
+    "keywords": [
+        "orm",
+        "json",
+        "sql"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/aleixcam/lilli.git"
+    },
+    "bugs": {
+        "url": "https://github.com/aleixcam/lilli/issues"
+    },
+    "homepage": "https://github.com/aleixcam/lilli#readme",
+    "dependencies": {
+        "pluralize": "^7.0.0"
+    },
+    "devDependencies": {
+        "chai": "^4.2.0"
+    }
+}
