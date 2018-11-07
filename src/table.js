@@ -1,13 +1,14 @@
 require('dotenv').config()
 const fs = require('fs')
+const path = require('path')
 const pluralize = require('pluralize')
 
 class Table {
     constructor(table) {
         this.table = table
-        this.database = (process.env.LILLI_DATA_DIRECTORY || './data/') + table + '.json'
-        this.charset = 'UTF8'
-        this.entity = require(process.env.LILLI_MODEL_DIRECTORY || './model/') + 'entity/' + pluralize.singular(table))
+        this.database = path.join(process.cwd(), process.env.LILLI_DATA_DIRECTORY || 'data', table + '.json')
+        this.charset = process.env.LILLI_CHARSET || 'UTF8'
+        this.entity = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'entity', pluralize.singular(table)))
         this.primaryKey = 'id'
         this.foreignKeys = {}
         this.foreignTables = {}
@@ -26,7 +27,7 @@ class Table {
     }
 
     hasMany(table) {
-        this.foreignTables[table] = require('./table/' + table)
+        this.foreignTables[table] = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table))
     }
 
     belongsTo(table) {
