@@ -1,4 +1,6 @@
 'use strict'
 
-module.exports = require('./src/table.js')
-require('./src/entity.js')
+module.exports = {
+    Table: require('./src/table.js'),
+    Entity: require('./src/entity.js')
+}
