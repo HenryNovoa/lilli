@@ -1,6 +1,6 @@
 {
     "name": "lilli",
-    "version": "0.2.0",
+    "version": "0.0.3",
     "description": "Tiny SQL-styled JSON ORM",
     "author": "Aleix Caminal",
     "license": "MIT",
