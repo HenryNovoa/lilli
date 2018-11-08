@@ -33,11 +33,13 @@ Lilli uses environment variables to set custom properties:
 
 ### Creation of a new model
 
-Lilli comes with an integrated CLI so you can generate skeletons for your model, just write in the console
+Lilli comes with an integrated CLI so you can generate skeletons for your model, just write in the console:
 
 ```
 lilli create users
 ```
+
+_Note that you should always use plurals for your model names_
 
 It will create a skeleton consisting of three files, let's see them:
 
