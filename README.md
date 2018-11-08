@@ -39,7 +39,7 @@ Lilli comes with an integrated CLI so you can generate skeletons for your model,
 lilli create users
 ```
 
-That will create a skeleton consisting of three files, let's see them:
+It will create a skeleton consisting of three files, let's see them:
 
 ##### model/table/users.js
 
@@ -95,7 +95,7 @@ The CLI also comes with a remove option:
 lilli remove users
 ```
 
-It will remove all files related to the specified model, except for the JSON data. That is up to you to decide whether you want to delete it or not.
+It will remove all files related to the specified model, except for the JSON data. Is up to you to decide whether you want to delete it or not.
 
 ## License
 
