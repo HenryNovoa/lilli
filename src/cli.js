@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const pluralize = require('pluralize')
-const pkg = require('./package.json');
+const pkg = require('../package.json');
 const dataDirectory = path.join(process.cwd(), process.env.LILLI_DATA_DIRECTORY || 'data')
 const modelDirectory = path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model')
 const tableDirectory = path.join(modelDirectory, 'table')
@@ -34,8 +34,26 @@ if (action) {
                 if (fs.existsSync(entityPath)) throw Error(`There is already a entity skeleton for the model ${chalk.bold.yellow(model.capitalize())} in your project`)
 
                 if (!fs.existsSync(dataPath)) fs.writeFileSync(dataPath, JSON.stringify([]))
-                fs.writeFileSync(tablePath)
-                fs.writeFileSync(entityPath)
+
+                fs.readFile('./src/templates/table.js', 'utf8', function(err, data) {
+                    if (err) throw Error(err)
+
+                    data = data.replace(/model/g, model)
+                    data = data.replace(/Model/g, model.capitalize())
+                    fs.writeFile(tablePath, data, 'utf8', function(err) {
+                        if (err) throw Error(err)
+                    })
+                })
+
+                fs.readFile('./src/templates/entity.js', 'utf8', function(err, data) {
+                    if (err) throw Error(err)
+
+                    data = data.replace(/model/g, pluralize.singular(model))
+                    data = data.replace(/Model/g, pluralize.singular(model).capitalize())
+                    fs.writeFile(entityPath, data, 'utf8', function(err) {
+                        if (err) throw Error(err)
+                    })
+                })
 
                 console.log(chalk.green(`Skeleton for model ${chalk.bold.yellow(model.capitalize())} was created successfully`))
                 break;
