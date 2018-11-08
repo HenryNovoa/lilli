@@ -2,17 +2,9 @@
     "name": "lilli",
     "version": "0.0.3",
     "description": "Tiny SQL-styled JSON ORM",
-    "author": "Aleix Caminal",
+    "author": "Aleix Caminal <aleixcam96@gmail.com> (https://github.com/aleixcam/)",
     "license": "MIT",
     "main": "index.js",
-    "keywords": [
-        "orm",
-        "json",
-        "sql"
-    ],
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/aleixcam/lilli.git"
@@ -21,7 +13,19 @@
         "url": "https://github.com/aleixcam/lilli/issues"
     },
     "homepage": "https://github.com/aleixcam/lilli#readme",
+    "keywords": [
+        "orm",
+        "json",
+        "sql"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "lilli": "./src/cli.js"
+    },
     "dependencies": {
+        "chalk": "^2.4.1",
         "pluralize": "^7.0.0"
     },
     "devDependencies": {
