@@ -35,7 +35,7 @@ if (action) {
 
                 if (!fs.existsSync(dataPath)) fs.writeFileSync(dataPath, JSON.stringify([]))
 
-                fs.readFile('./src/templates/table.js', 'utf8', function(err, data) {
+                fs.readFile(path.join(__dirname, 'templates/table.js'), 'utf8', function(err, data) {
                     if (err) throw Error(err)
 
                     data = data.replace(/model/g, model)
@@ -45,7 +45,7 @@ if (action) {
                     })
                 })
 
-                fs.readFile('./src/templates/entity.js', 'utf8', function(err, data) {
+                fs.readFile(path.join(__dirname, 'templates/entity.js'), 'utf8', function(err, data) {
                     if (err) throw Error(err)
 
                     data = data.replace(/model/g, pluralize.singular(model))
