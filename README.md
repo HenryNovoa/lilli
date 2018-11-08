@@ -3,19 +3,19 @@
 Lilliputian SQL-styled JSON ORM
 
 * **Lilliputian:** Lilli is so tiny and simple you won't even notice is there!
-* **Local:** Following it's simplicity, you don't need a database provider to store and persist your data.
+* **Local:** Following its simplicity, you don't need a database provider to store and persist your data.
 You just need a directory in your project to store all your JSON data files.
-* **SQL-like:** Every JSON in your data directory works as a SQL table and the syntax of the queries are similar to many others SQL ORMs.
+* **SQL-like:** Every JSON in your data directory works as a SQL table and the syntax in your queries will be similar to many other SQL ORMs.
 
 ## Installation
 
-#### with npm
+#### With npm
 
 ```
 npm i lilli
 ```
 
-#### with yarn
+#### With yarn
 
 ```
 yarn add lilli
