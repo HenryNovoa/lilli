@@ -75,7 +75,7 @@ class User extends Entity {
 module.exports = User
 ```
 
-The entity. Here you can specify the values for your object, and their defaults.
+The entity. Here you can set the values for your object, and their defaults.
 
 By default an entity contains an `id` field, which is the primary key for all tables.
 
@@ -95,7 +95,7 @@ The CLI also comes with a remove option:
 lilli remove users
 ```
 
-It will remove all files related to the model specified, except for the JSON data. That is up to you to decide whether you want to delete it or not.
+It will remove all files related to the specified model, except for the JSON data. That is up to you to decide whether you want to delete it or not.
 
 ## License
 
