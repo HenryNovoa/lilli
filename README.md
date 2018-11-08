@@ -41,7 +41,7 @@ lilli create users
 
 That will create a skeleton consisting of three files, let's see them:
 
-###### model/table/users.js
+##### model/table/users.js
 
 ```javascript
 const { Table } = require('lilli')
@@ -59,7 +59,7 @@ The table. Here you will specify the relations to other tables in your project.
 
 This is also the file you will need to require in your project to write queries, save data, and all the other stuff.
 
-###### model/entity/user.js
+##### model/entity/user.js
 
 ```javascript
 const { Entity } = require('lilli')
@@ -79,7 +79,7 @@ The entity. Here you can set the values for your object, and their defaults.
 
 By default an entity contains an `id` field, which is the primary key for all tables.
 
-###### data/users.json
+##### data/users.json
 
 ```javascript
 []
