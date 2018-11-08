@@ -19,7 +19,7 @@
         "sql"
     ],
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "mocha"
     },
     "bin": {
         "lilli": "./src/cli.js"
@@ -29,6 +29,7 @@
         "pluralize": "^7.0.0"
     },
     "devDependencies": {
-        "chai": "^4.2.0"
+        "chai": "^4.2.0",
+        "mocha": "^5.2.0"
     }
 }
