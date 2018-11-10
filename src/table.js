@@ -57,6 +57,22 @@ class Table {
         return this
     }
 
+    order(query) {
+        const fields = Object.keys(query)
+        const direction = Object.values(query)
+        this.query.sort((a, b) => {
+            switch (str.toLowerCase(direction[0])) {
+                case 'asc':
+                    return a[fields[0]] - b[fields[0]]
+                case 'desc':
+                    return a[fields[0]] + b[fields[0]]
+
+            }
+        });
+
+        return this
+    }
+
     save(entity) {
         let data = this.data.slice()
         const index = data.findIndex(element => element[this.primaryKey] === entity[this.primaryKey])
