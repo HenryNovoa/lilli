@@ -61,13 +61,18 @@ class Table {
         const fields = Object.keys(query)
         const direction = Object.values(query)
         this.query.sort((a, b) => {
-            switch (str.toLowerCase(direction[0])) {
-                case 'asc':
-                    return a[fields[0]] - b[fields[0]]
-                case 'desc':
-                    return a[fields[0]] + b[fields[0]]
-
-            }
+            let result, index = 0
+            do {
+                switch (direction[index].toLowerCase()) {
+                    case 'asc':
+                        result = a[fields[index]] > b[fields[index]] ? 1 : (b[fields[index]] > a[fields[index]] ? -1 : 0)
+                        break
+                    case 'desc':
+                        result = a[fields[index]] < b[fields[index]] ? 1 : (b[fields[index]] < a[fields[index]] ? -1 : 0)
+                        break
+                }
+            } while (!result && ++index < direction.length);
+            return result
         });
 
         return this
