@@ -10,8 +10,7 @@ class Table {
         this._charset = process.env.LILLI_CHARSET || 'UTF8'
         this._entity = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'entity', pluralize.singular(table)))
         this._primaryKey = 'id'
-        this._foreignKeys = {}
-        this._foreignTables = {}
+        this._relations = []
         this._data = this._readData()
         this._query = this._data.slice()
     }
@@ -26,16 +25,29 @@ class Table {
         return this._readData()
     }
 
-    primaryKey(key) {
+    _setRelation(table, props, type) {
+        const model = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table))
+        this._relations.push({ [table]: { type, model, ...props } })
+    }
+
+    setPrimaryKey(key) {
         this._primaryKey = key
     }
 
-    hasMany(table) {
-        this._foreignTables[table] = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table))
+    hasOne(table, props) {
+        this._setRelation(table, props, 'oneToOne')
     }
 
-    belongsTo(table) {
-        this._foreignKeys = Object.assign(this._foreignKeys, table)
+    hasMany(table, props) {
+        this._setRelation(table, props, 'oneToMany')
+    }
+
+    belongsTo(table, props) {
+        this._setRelation(table, props, 'manyToOne')
+    }
+
+    belongsToMany(table, props) {
+        this._setRelation(table, props, 'manyToMany')
     }
 
     newEntity(query) {
@@ -43,11 +55,23 @@ class Table {
     }
 
     contains(table) {
+        const relation = this._relations[table]
         this._query.forEach((element, index) => {
-            const foreignTable = new this._foreignTables[table]
-            this._query[index][table] = foreignTable.where({
-                [foreignTable.foreignKeys[this._table]]: element[this._primaryKey]
-            }).all()
+            const foreignTable = new relation.model
+            switch (relation.type) {
+                case 'oneToOne':
+                case 'manyToOne':
+                    this._query[index][pluralize.singular(table)] = foreignTable.where({
+                        [foreignTable._primaryKey]: element[relation.foreignKey]
+                    }).first()
+                    break
+                case 'oneToMany':
+                case 'manyToMany':
+                    this._query[index][table] = foreignTable.where({
+                        [relation.foreignKey]: element[this._primaryKey]
+                    }).all()
+                    break
+            }
         })
 
         return this
