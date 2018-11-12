@@ -2,10 +2,10 @@
 
 Lilliputian SQL-styled JSON ORM
 
-* **Lilliputian:** Lilli is so tiny and simple you won't even notice is there!
 * **Local:** Following its simplicity, you don't need a database provider to store and persist your data.
 You just need a directory in your project to store all your JSON data files.
 * **SQL-like:** Every JSON in your data directory works as a SQL table and the syntax in your queries will be similar to many other SQL ORMs.
+* **Lilliputian:** Lilli is so tiny and simple you won't even notice is there!
 
 ## Installation
 
@@ -88,6 +88,42 @@ By default an entity contains an `id` field, which is the primary key for all ta
 ```
 
 The data JSON, only created if not exists. Is an empty array to represent a table without entities
+
+### Linking tables together
+
+All you need to set up a relationship between tables:
+
+```javascript
+const { Table } = require('lilli')
+
+class UsersTable extends Table {
+    constructor() {
+        super('users')
+
+        // A user has one profile
+        this.hasOne('profile', {
+            foreignKey: 'userId' // foreign key in ProfilesTable
+        })
+
+        // A user can have many posts
+        this.hasMany('posts', {
+            foreignKey: 'userId' // foreign key in PostsTable
+        })
+
+        // Many users belong to a wing
+        this.belongsTo('wings', {
+            foreignKey: 'wingId' // foreign key in UsersTable
+        })
+
+        // Users belong to many groups
+        this.belongsToMany('groups', {
+            foreignKey: 'groupIds' // array of foreign keys in UsersTable
+        })
+    }
+}
+
+module.exports = UsersTable
+```
 
 ### Removing a model
 
