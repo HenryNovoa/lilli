@@ -5,44 +5,48 @@ const pluralize = require('pluralize')
 
 class Table {
     constructor(table) {
-        this.table = table
-        this.database = path.join(process.cwd(), process.env.LILLI_DATA_DIRECTORY || 'data', table + '.json')
-        this.charset = process.env.LILLI_CHARSET || 'UTF8'
-        this.entity = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'entity', pluralize.singular(table)))
-        this.primaryKey = 'id'
-        this.foreignKeys = {}
-        this.foreignTables = {}
-        this.data = this.readData()
-        this.query = this.data.slice()
+        this._table = table
+        this._database = path.join(process.cwd(), process.env.LILLI_DATA_DIRECTORY || 'data', table + '.json')
+        this._charset = process.env.LILLI_CHARSET || 'UTF8'
+        this._entity = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'entity', pluralize.singular(table)))
+        this._primaryKey = 'id'
+        this._foreignKeys = {}
+        this._foreignTables = {}
+        this._data = this._readData()
+        this._query = this._data.slice()
     }
 
-    readData() {
-        const data = JSON.parse(fs.readFileSync(this.database, this.charset)) || []
+    _readData() {
+        const data = JSON.parse(fs.readFileSync(this._database, this._charset)) || []
         return Object.freeze(data)
     }
 
-    writeData(data) {
-        fs.writeFileSync(this.database, JSON.stringify(data), this.charset)
-        return this.readData()
+    _writeData(data) {
+        fs.writeFileSync(this._database, JSON.stringify(data), this._charset)
+        return this._readData()
+    }
+
+    primaryKey(key) {
+        this._primaryKey = key
     }
 
     hasMany(table) {
-        this.foreignTables[table] = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table))
+        this._foreignTables[table] = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table))
     }
 
     belongsTo(table) {
-        this.foreignKeys = Object.assign(this.foreignKeys, table)
+        this._foreignKeys = Object.assign(this._foreignKeys, table)
     }
 
     newEntity(query) {
-        return new this.entity(query)
+        return new this._entity(query)
     }
 
     contains(table) {
-        this.query.forEach((element, index) => {
-            const foreignTable = new this.foreignTables[table]
-            this.query[index][table] = foreignTable.where({
-                [foreignTable.foreignKeys[this.table]]: element[this.primaryKey]
+        this._query.forEach((element, index) => {
+            const foreignTable = new this._foreignTables[table]
+            this._query[index][table] = foreignTable.where({
+                [foreignTable.foreignKeys[this._table]]: element[this._primaryKey]
             }).all()
         })
 
@@ -51,7 +55,7 @@ class Table {
 
     where(query) {
         for(let key in query) {
-            this.query = this.query.filter(element => element[key] == query[key])
+            this._query = this._query.filter(element => element[key] == query[key])
         }
 
         return this
@@ -60,7 +64,7 @@ class Table {
     order(query) {
         const fields = Object.keys(query)
         const direction = Object.values(query)
-        this.query.sort((a, b) => {
+        this._query.sort((a, b) => {
             let result, index = 0
             do {
                 switch (direction[index].toLowerCase()) {
@@ -79,30 +83,30 @@ class Table {
     }
 
     save(entity) {
-        let data = this.data.slice()
-        const index = data.findIndex(element => element[this.primaryKey] === entity[this.primaryKey])
+        let data = this._data.slice()
+        const index = data.findIndex(element => element[this._primaryKey] === entity[this._primaryKey])
         index < 0 ? data.push(entity) : data[index] = entity
-        this.data = this.writeData(data)
+        this._data = this._writeData(data)
         return entity
     }
 
     delete(entity) {
-        let data = this.data.slice()
-        data = data.filter(element => element[this.primaryKey] !== entity[this.primaryKey])
-        this.data = this.writeData(data)
+        let data = this._data.slice()
+        data = data.filter(element => element[this._primaryKey] !== entity[this._primaryKey])
+        this._data = this._writeData(data)
         return true
     }
 
     all() {
-        return this.query
+        return this._query
     }
 
     first() {
-        return this.query[0]
+        return this._query[0]
     }
 
     get(value) {
-        return this.where({ [this.primaryKey]: value }).first()
+        return this.where({ [this._primaryKey]: value }).first()
     }
 }
 
