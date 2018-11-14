@@ -1,6 +1,6 @@
 'use strict'
 
 module.exports = {
-    Table: require('./src/table.js'),
-    Entity: require('./src/entity.js')
+    Table: require('./build/table.js'),
+    Entity: require('./build/entity.js')
 }
