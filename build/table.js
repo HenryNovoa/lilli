@@ -42,7 +42,7 @@ var Table = function () {
     }, {
         key: '_setRelation',
         value: function _setRelation(table, props, type) {
-            var model = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table));
+            var model = require('' + path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table));
             this._relations[table] = _extends({ table: table, type: type }, props);
         }
     }, {

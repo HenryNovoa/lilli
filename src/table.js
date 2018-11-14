@@ -26,7 +26,7 @@ class Table {
     }
 
     _setRelation(table, props, type) {
-        const model = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table))
+        const model = require(`${path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table)}`)
         this._relations[table] = {table, type, ...props}
     }
 
