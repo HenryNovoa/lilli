@@ -27,7 +27,8 @@ class Table {
 
     _setRelation(table, props, type) {
         const model = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table))
-        this._relations[table] = { type, model, ...props }
+        Object.assign(props, {table, type})
+        this._relations[table] = props
     }
 
     _oneToOne(relatedTable, entity, index) {
