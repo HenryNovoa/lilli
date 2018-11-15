@@ -8,7 +8,7 @@ class Table {
         this._table = table
         this._database = path.join(process.cwd(), process.env.LILLI_DATA_DIRECTORY || 'data', table + '.json')
         this._charset = process.env.LILLI_CHARSET || 'UTF8'
-        this._entity = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'entity', pluralize.singular(table)))
+        this._entity = require(`${path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'entity', pluralize.singular(table))}`)
         this._primaryKey = 'id'
         this._relations = {}
         this._data = this._readData()
@@ -26,7 +26,7 @@ class Table {
     }
 
     _setRelation(table, props, type) {
-        const model = require(path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table))
+        const model = require(`${path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table)}`)
         this._relations[table] = { type, model, ...props }
     }
 

@@ -1,6 +1,6 @@
 {
     "name": "lilli",
-    "version": "0.0.6",
+    "version": "0.1.0",
     "description": "Tiny SQL-styled JSON ORM",
     "author": "Aleix Caminal <aleixcam96@gmail.com> (https://github.com/aleixcam/)",
     "license": "MIT",
@@ -19,16 +19,21 @@
         "sql"
     ],
     "scripts": {
-        "test": "mocha"
+        "test": "mocha",
+        "build": "babel src -d build"
     },
     "bin": {
-        "lilli": "./src/cli.js"
+        "lilli": "./cli/index.js"
     },
     "dependencies": {
         "chalk": "^2.4.1",
+        "dotenv": "^6.1.0",
         "pluralize": "^7.0.0"
     },
     "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-preset-env": "^1.7.0",
         "chai": "^4.2.0",
         "mocha": "^5.2.0"
     }
