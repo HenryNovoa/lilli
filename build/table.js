@@ -175,6 +175,34 @@ var Table = function () {
             return true;
         }
     }, {
+        key: 'group',
+        value: function group(field) {
+            var _this5 = this;
+
+            var groups = [];
+            this._query.forEach(function (element) {
+                var index = groups.findIndex(function (group) {
+                    return group[field] === element[field];
+                });
+                if (index < 0) {
+                    var _groups$push;
+
+                    groups.push((_groups$push = {}, _defineProperty(_groups$push, field, element[field]), _defineProperty(_groups$push, _this5._table, []), _groups$push));
+
+                    index = groups.length - 1;
+                }
+
+                groups[index][_this5._table].push(element);
+            });
+
+            return groups;
+        }
+    }, {
+        key: 'count',
+        value: function count() {
+            return this._query.length;
+        }
+    }, {
         key: 'all',
         value: function all() {
             return this._query;
