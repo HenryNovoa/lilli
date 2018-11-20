@@ -7,6 +7,10 @@ You just need a directory in your project to store all your JSON data files.
 * **SQL-like:** Every JSON in your data directory works as a SQL table and the syntax in your queries will be similar to many other SQL ORMs.
 * **Lilliputian:** Lilli is so tiny and simple you won't even notice is there!
 
+## Caution!
+
+Lilli is in very early stages of development and you might find some bugs. If you want to contribute feel free to do so.
+
 ## Installation
 
 #### With npm
@@ -123,6 +127,39 @@ class UsersTable extends Table {
 }
 
 module.exports = UsersTable
+```
+
+### Methods and examples
+
+These are the currently available methods for Lilli and their syntax:
+
+```javascript
+const { UsersTable } = require('model/table/users')
+const { PostsTable } = require('model/table/posts')
+const { WingsTable } = require('model/table/wings')
+
+const wingsTable = new WingsTable() // Instantiate the table
+const wing = wingsTable.get(id) // Return value by primary key
+
+const usersTable = new UsersTable()
+usersTable.contains(['posts']) // Embed a related table
+    .select(['username', 'email']) // Array of keys to be selected, the primary key will always be selected
+    .where({ name: 'John', surname: 'Doe' }) // Object { key: 'value to search' }, only exact values
+
+// If no return method is called, you can continue the query
+const user = usersTable.where({ active: 1 }) // You can put as many wheres as you want
+    .first(['artist', 'album']) // Return the first element founded
+
+const postsTable = new PostsTable()
+const posts = postsTable
+    .order({ created: 'desc', title: 'asc' }) // Object { key: 'direction' } to order query
+    .group(['userId']) // Return values grouped by the specified key, many keys create groups recursively
+
+const usersTable = new UsersTable() // You can instantiate again to do another query
+const allUsers = usersTable.all() // Return all elements in the query
+
+const usersTable = new UsersTable() // You can instantiate again to do another query
+const countUsers = usersTable.count() // Return the count of all elements in the query
 ```
 
 ### Removing a model

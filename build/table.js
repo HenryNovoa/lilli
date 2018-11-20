@@ -66,6 +66,35 @@ var Table = function () {
             this._oneToMany(relatedTable, entity, index);
         }
     }, {
+        key: '_group',
+        value: function _group(query, field, left) {
+            var _this = this;
+
+            var groups = [];
+            var next = left.shift();
+            var table = next ? pluralize.plural(next) : this._table;
+
+            query.forEach(function (element) {
+                var index = groups.findIndex(function (group) {
+                    return group[field] === element[field];
+                });
+                if (index < 0) {
+                    var _groups$push;
+
+                    groups.push((_groups$push = {}, _defineProperty(_groups$push, field, element[field]), _defineProperty(_groups$push, table, []), _groups$push));
+
+                    index = groups.length - 1;
+                }
+
+                groups[index][table].push(element);
+            });
+
+            if (next) groups.forEach(function (group) {
+                return group[table] = _this._group(group[table], next, left);
+            });
+            return groups;
+        }
+    }, {
         key: 'setPrimaryKey',
         value: function setPrimaryKey(key) {
             this._primaryKey = key;
@@ -98,12 +127,12 @@ var Table = function () {
     }, {
         key: 'contains',
         value: function contains(tables) {
-            var _this = this;
+            var _this2 = this;
 
             tables.forEach(function (table) {
-                _this._query.forEach(function (element, index) {
-                    var relatedTable = new _this._relations[table].model();
-                    _this['_' + _this._relations[table].type](relatedTable, element, index);
+                _this2._query.forEach(function (element, index) {
+                    var relatedTable = new _this2._relations[table].model();
+                    _this2['_' + _this2._relations[table].type](relatedTable, element, index);
                 });
             });
 
@@ -112,6 +141,7 @@ var Table = function () {
     }, {
         key: 'select',
         value: function select(fields) {
+            fields.push(this._primaryKey);
             this._query.forEach(function (element) {
                 for (var key in element) {
                     if (!fields.includes(key)) delete element[key];
@@ -123,10 +153,10 @@ var Table = function () {
     }, {
         key: 'where',
         value: function where(query) {
-            var _this2 = this;
+            var _this3 = this;
 
             var _loop = function _loop(key) {
-                _this2._query = _this2._query.filter(function (element) {
+                _this3._query = _this3._query.filter(function (element) {
                     return element[key] == query[key];
                 });
             };
@@ -163,11 +193,11 @@ var Table = function () {
     }, {
         key: 'save',
         value: function save(entity) {
-            var _this3 = this;
+            var _this4 = this;
 
             var data = this._data.slice();
             var index = data.findIndex(function (element) {
-                return element[_this3._primaryKey] === entity[_this3._primaryKey];
+                return element[_this4._primaryKey] === entity[_this4._primaryKey];
             });
             index < 0 ? data.push(entity) : data[index] = entity;
             this._data = this._writeData(data);
@@ -176,36 +206,20 @@ var Table = function () {
     }, {
         key: 'delete',
         value: function _delete(entity) {
-            var _this4 = this;
+            var _this5 = this;
 
             var data = this._data.slice();
             data = data.filter(function (element) {
-                return element[_this4._primaryKey] !== entity[_this4._primaryKey];
+                return element[_this5._primaryKey] !== entity[_this5._primaryKey];
             });
             this._data = this._writeData(data);
             return true;
         }
     }, {
         key: 'group',
-        value: function group(field) {
-            var _this5 = this;
-
-            var groups = [];
-            this._query.forEach(function (element) {
-                var index = groups.findIndex(function (group) {
-                    return group[field] === element[field];
-                });
-                if (index < 0) {
-                    var _groups$push;
-
-                    groups.push((_groups$push = {}, _defineProperty(_groups$push, field, element[field]), _defineProperty(_groups$push, _this5._table, []), _groups$push));
-
-                    index = groups.length - 1;
-                }
-
-                groups[index][_this5._table].push(element);
-            });
-
+        value: function group(fields) {
+            var field = fields.shift();
+            var groups = this._group(this._query, field, fields);
             return groups;
         }
     }, {
