@@ -131,6 +131,29 @@ class Table {
         return true
     }
 
+    group(field) {
+        const groups = []
+        this._query.forEach(element => {
+            let index = groups.findIndex(group => group[field] === element[field])
+            if (index < 0) {
+                groups.push({
+                    [field]: element[field],
+                    [this._table]: []
+                })
+
+                index = groups.length - 1
+            }
+
+            groups[index][this._table].push(element)
+        })
+
+        return groups
+    }
+
+    count() {
+        return this._query.length
+    }
+
     all() {
         return this._query
     }
