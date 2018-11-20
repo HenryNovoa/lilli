@@ -52,6 +52,29 @@ class Table {
         this._oneToMany(relatedTable, entity, index)
     }
 
+    _group(query, field, left) {
+        const groups = []
+        const next = left.shift()
+        const table = next ? pluralize.plural(next) : this._table
+
+        query.forEach(element => {
+            let index = groups.findIndex(group => group[field] === element[field])
+            if (index < 0) {
+                groups.push({
+                    [field]: element[field],
+                    [table]: []
+                })
+
+                index = groups.length - 1
+            }
+
+            groups[index][table].push(element)
+        })
+
+        if (next) groups.forEach(group => group[table] = this._group(group[table], next, left))
+        return groups
+    }
+
     setPrimaryKey(key) {
         this._primaryKey = key
     }
@@ -88,6 +111,7 @@ class Table {
     }
 
     select(fields) {
+        fields.push(this._primaryKey)
         this._query.forEach(element => {
             for (var key in element) {
                 if (!fields.includes(key)) delete element[key]
@@ -119,9 +143,9 @@ class Table {
                         result = a[fields[index]] < b[fields[index]] ? 1 : (b[fields[index]] < a[fields[index]] ? -1 : 0)
                         break
                 }
-            } while (!result && ++index < direction.length);
+            } while (!result && ++index < direction.length)
             return result
-        });
+        })
 
         return this
     }
@@ -141,22 +165,9 @@ class Table {
         return true
     }
 
-    group(field) {
-        const groups = []
-        this._query.forEach(element => {
-            let index = groups.findIndex(group => group[field] === element[field])
-            if (index < 0) {
-                groups.push({
-                    [field]: element[field],
-                    [this._table]: []
-                })
-
-                index = groups.length - 1
-            }
-
-            groups[index][this._table].push(element)
-        })
-
+    group(fields) {
+        const field = fields.shift()
+        const groups = this._group(this._query, field, fields)
         return groups
     }
 
