@@ -110,6 +110,17 @@ var Table = function () {
             return this;
         }
     }, {
+        key: 'select',
+        value: function select(fields) {
+            this._query.forEach(function (element) {
+                for (var key in element) {
+                    if (!fields.includes(key)) delete element[key];
+                }
+            });
+
+            return this;
+        }
+    }, {
         key: 'where',
         value: function where(query) {
             var _this2 = this;
