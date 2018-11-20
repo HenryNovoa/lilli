@@ -87,6 +87,16 @@ class Table {
         return this
     }
 
+    select(fields) {
+        this._query.forEach(element => {
+            for (var key in element) {
+                if (!fields.includes(key)) delete element[key]
+            }
+        })
+
+        return this
+    }
+
     where(query) {
         for(let key in query) {
             this._query = this._query.filter(element => element[key] == query[key])
