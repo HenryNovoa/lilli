@@ -1,8 +1,8 @@
 const { Table } = require('lilli')
 
 class ModelTable extends Table {
-    constructor() {
-        super('model')
+    constructor(query) {
+        super('model', query)
     }
 }
 
