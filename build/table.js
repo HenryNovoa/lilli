@@ -14,7 +14,7 @@ var path = require('path');
 var pluralize = require('pluralize');
 
 var Table = function () {
-    function Table(table) {
+    function Table(table, query) {
         _classCallCheck(this, Table);
 
         this._table = table;
@@ -24,7 +24,7 @@ var Table = function () {
         this._primaryKey = 'id';
         this._relations = {};
         this._data = this._readData();
-        this._query = this._data.slice();
+        this._query = query || this._data.slice();
     }
 
     _createClass(Table, [{

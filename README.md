@@ -83,7 +83,7 @@ module.exports = User
 
 The entity. Here you can set the values for your object, and their defaults.
 
-By default an entity contains an `id` field, which is the primary key for all tables.
+By default an entity contains an `id` field, which is the default primary key for all tables.
 
 ##### data/users.json
 
@@ -104,6 +104,9 @@ class UsersTable extends Table {
     constructor() {
         super('users')
 
+        // Change the Primary Key
+        this.setPrimaryKey('email')
+
         // A user has one profile
         this.hasOne('profile', {
             foreignKey: 'userId' // foreign key in ProfilesTable
@@ -119,7 +122,7 @@ class UsersTable extends Table {
             foreignKey: 'wingId' // foreign key in UsersTable
         })
 
-        // Users belong to many groups
+        // Users belong to many groups (not implemented)
         this.belongsToMany('groups', {
             foreignKey: 'groupIds' // array of foreign keys in UsersTable
         })
@@ -133,10 +136,12 @@ module.exports = UsersTable
 
 These are the currently available methods for Lilli and their syntax:
 
+#### Iterate data
+
 ```javascript
-const { UsersTable } = require('model/table/users')
-const { PostsTable } = require('model/table/posts')
-const { WingsTable } = require('model/table/wings')
+const { UsersTable } = require('./model/table/users')
+const { PostsTable } = require('./model/table/posts')
+const { WingsTable } = require('./model/table/wings')
 
 const wingsTable = new WingsTable() // Instantiate the table
 const wing = wingsTable.get(id) // Return value by primary key
@@ -158,8 +163,44 @@ const posts = postsTable
 const usersTable = new UsersTable() // You can instantiate again to do another query
 const allUsers = usersTable.all() // Return all elements in the query
 
-const usersTable = new UsersTable() // You can instantiate again to do another query
+const usersTable = new UsersTable(allUsers) // You can start the query with a previous collection
 const countUsers = usersTable.count() // Return the count of all elements in the query
+```
+
+#### Save data
+
+```javascript
+const { UsersTable } = require('./model/table/users')
+
+// Create a new entity
+const usersTable = new UsersTable()
+let user = usersTable.newEntity({
+    username: 'mattbellamy',
+    name: 'Matthew',
+    surname: 'Bellamy',
+    email: 'matt@muse.mu'
+}) // returns new entity
+
+// Insert new data
+user = usersTable.save(user) // returns saved entity
+
+// Update existing entity with new data
+user.username = 'rocketbabydoll'
+user = usersTable.save(user)
+```
+
+#### Delete data
+
+```javascript
+const { UsersTable } = require('./model/table/users')
+
+// Create a new entity
+const usersTable = new UsersTable()
+const user = usersTable.where({ username: 'rocketbabydoll' }).first()
+
+// Delete entity
+usersTable.delete(user) // returns confirmation (true = deleted)
+
 ```
 
 ### Removing a model

@@ -4,7 +4,7 @@ const path = require('path')
 const pluralize = require('pluralize')
 
 class Table {
-    constructor(table) {
+    constructor(table, query) {
         this._table = table
         this._database = path.join(process.cwd(), process.env.LILLI_DATA_DIRECTORY || 'data', table + '.json')
         this._charset = process.env.LILLI_CHARSET || 'UTF8'
@@ -12,7 +12,7 @@ class Table {
         this._primaryKey = 'id'
         this._relations = {}
         this._data = this._readData()
-        this._query = this._data.slice()
+        this._query = query || this._data.slice()
     }
 
     _readData() {
