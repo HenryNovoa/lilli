@@ -132,16 +132,19 @@ class Table {
     order(query) {
         const fields = Object.keys(query)
         const direction = Object.values(query)
-        this._query.sort((a, b) => {
+        this._query.sort((oa, ob) => {
             let result, index = 0
             do {
-                switch (direction[index].toLowerCase()) {
-                    case 'asc':
-                        result = a[fields[index]] > b[fields[index]] ? 1 : (b[fields[index]] > a[fields[index]] ? -1 : 0)
-                        break
-                    case 'desc':
-                        result = a[fields[index]] < b[fields[index]] ? 1 : (b[fields[index]] < a[fields[index]] ? -1 : 0)
-                        break
+                const dir = direction[index].toLowerCase()
+                let a = oa[fields[index]], b = ob[fields[index]]
+                if (a == null || b == null) {
+                    result = dir === 'asc' ? (a === b ? 0 : (!a ? 1 : -1)) : (a === b ? 0 : (!b ? 1 : -1))
+                } else if (typeof a === 'string') {
+                    a = a.toLowerCase()
+                    b = b.toLowerCase()
+                    result = dir === 'asc' ? (a > b ? 1 : (b > a ? -1 : 0)) : (a < b ? 1 : (b < a ? -1 : 0))
+                } else {
+                    result = dir === 'asc' ? (a > b ? 1 : (b > a ? -1 : 0)) : (a < b ? 1 : (b < a ? -1 : 0))
                 }
             } while (!result && ++index < direction.length)
             return result
