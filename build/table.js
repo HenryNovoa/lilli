@@ -14,6 +14,12 @@ var path = require('path');
 var pluralize = require('pluralize');
 
 var Table = function () {
+
+    /**
+     *
+     * @param {string} table
+     * @param {Array} query
+     */
     function Table(table, query) {
         _classCallCheck(this, Table);
 
@@ -27,44 +33,108 @@ var Table = function () {
         this._query = query || this._data.slice();
     }
 
+    /**
+     *
+     * @returns {Array}
+     */
+
+
     _createClass(Table, [{
         key: '_readData',
         value: function _readData() {
             var data = JSON.parse(fs.readFileSync(this._database, this._charset)) || [];
             return Object.freeze(data);
         }
+
+        /**
+         *
+         * @param {Array} data
+         *
+         * @returns {Array}
+         */
+
     }, {
         key: '_writeData',
         value: function _writeData(data) {
             fs.writeFileSync(this._database, JSON.stringify(data), this._charset);
             return this._readData();
         }
+
+        /**
+         *
+         * @param {string} table
+         * @param {Object} props
+         * @param {string} type
+         */
+
     }, {
         key: '_setRelation',
         value: function _setRelation(table, props, type) {
             var model = require('' + path.join(process.cwd(), process.env.LILLI_MODEL_DIRECTORY || 'model', 'table', table));
             this._relations[table] = _extends({ type: type, model: model }, props);
         }
+
+        /**
+         *
+         * @param {string} table
+         * @param {Object} props
+         * @param {string} type
+         */
+
     }, {
         key: '_oneToOne',
         value: function _oneToOne(relatedTable, entity, index) {
             this._query[index][pluralize.singular(relatedTable._table)] = relatedTable.where(_defineProperty({}, this._relations[relatedTable._table].foreignKey, entity[this._primaryKey])).first();
         }
+
+        /**
+         *
+         * @param {Table} relatedTable
+         * @param {Entity} entity
+         * @param {number} index
+         */
+
     }, {
         key: '_oneToMany',
         value: function _oneToMany(relatedTable, entity, index) {
             this._query[index][relatedTable._table] = relatedTable.where(_defineProperty({}, this._relations[relatedTable._table].foreignKey, entity[this._primaryKey])).all();
         }
+
+        /**
+         *
+         * @param {Table} relatedTable
+         * @param {Entity} entity
+         * @param {number} index
+         */
+
     }, {
         key: '_manyToOne',
         value: function _manyToOne(relatedTable, entity, index) {
             this._query[index][pluralize.singular(relatedTable._table)] = relatedTable.where(_defineProperty({}, relatedTable._primaryKey, entity[this._relations[relatedTable._table].foreignKey])).first();
         }
+
+        /**
+         *
+         * @param {Table} relatedTable
+         * @param {Entity} entity
+         * @param {number} index
+         */
+
     }, {
         key: '_manyToMany',
         value: function _manyToMany(relatedTable, entity, index) {
             this._oneToMany(relatedTable, entity, index);
         }
+
+        /**
+         *
+         * @param {Array} query
+         * @param {string} field
+         * @param {Array} index
+         *
+         * @returns {Array}
+         */
+
     }, {
         key: '_group',
         value: function _group(query, field, left) {
@@ -94,36 +164,86 @@ var Table = function () {
             });
             return groups;
         }
+
+        /**
+         *
+         * @param {string} key
+         */
+
     }, {
         key: 'setPrimaryKey',
         value: function setPrimaryKey(key) {
             this._primaryKey = key;
         }
+
+        /**
+         *
+         * @param {string} table
+         * @param {Object} props
+         */
+
     }, {
         key: 'hasOne',
         value: function hasOne(table, props) {
             this._setRelation(table, props, 'oneToOne');
         }
+
+        /**
+         *
+         * @param {string} table
+         * @param {Object} props
+         */
+
     }, {
         key: 'hasMany',
         value: function hasMany(table, props) {
             this._setRelation(table, props, 'oneToMany');
         }
+
+        /**
+         *
+         * @param {string} table
+         * @param {Object} props
+         */
+
     }, {
         key: 'belongsTo',
         value: function belongsTo(table, props) {
             this._setRelation(table, props, 'manyToOne');
         }
+
+        /**
+         *
+         * @param {string} table
+         * @param {Object} props
+         */
+
     }, {
         key: 'belongsToMany',
         value: function belongsToMany(table, props) {
             this._setRelation(table, props, 'manyToMany');
         }
+
+        /**
+         *
+         * @param {Object} table
+         *
+         * @returns {Entity}
+         */
+
     }, {
         key: 'newEntity',
         value: function newEntity(query) {
             return new this._entity(query);
         }
+
+        /**
+         *
+         * @param {Array} tables
+         *
+         * @returns {Table}
+         */
+
     }, {
         key: 'contains',
         value: function contains(tables) {
@@ -138,6 +258,14 @@ var Table = function () {
 
             return this;
         }
+
+        /**
+         *
+         * @param {Array} fields
+         *
+         * @returns {Table}
+         */
+
     }, {
         key: 'select',
         value: function select(fields) {
@@ -150,6 +278,14 @@ var Table = function () {
 
             return this;
         }
+
+        /**
+         *
+         * @param {Object} query
+         *
+         * @returns {Table}
+         */
+
     }, {
         key: 'where',
         value: function where(query) {
@@ -167,6 +303,14 @@ var Table = function () {
 
             return this;
         }
+
+        /**
+         *
+         * @param {Object} query
+         *
+         * @returns {Table}
+         */
+
     }, {
         key: 'order',
         value: function order(query) {
@@ -194,6 +338,14 @@ var Table = function () {
 
             return this;
         }
+
+        /**
+         *
+         * @param {Entity} entity
+         *
+         * @returns {Entity}
+         */
+
     }, {
         key: 'save',
         value: function save(entity) {
@@ -207,6 +359,14 @@ var Table = function () {
             this._data = this._writeData(data);
             return entity;
         }
+
+        /**
+         *
+         * @param {Entity} entity
+         *
+         * @returns {boolean}
+         */
+
     }, {
         key: 'delete',
         value: function _delete(entity) {
@@ -219,6 +379,14 @@ var Table = function () {
             this._data = this._writeData(data);
             return true;
         }
+
+        /**
+         *
+         * @param {Array} fields
+         *
+         * @returns {Array}
+         */
+
     }, {
         key: 'group',
         value: function group(fields) {
@@ -226,21 +394,45 @@ var Table = function () {
             var groups = this._group(this._query, field, fields);
             return groups;
         }
+
+        /**
+         *
+         * @returns {number}
+         */
+
     }, {
         key: 'count',
         value: function count() {
             return this._query.length;
         }
+
+        /**
+         *
+         * @returns {Array}
+         */
+
     }, {
         key: 'all',
         value: function all() {
             return this._query;
         }
+
+        /**
+         *
+         * @returns {Entity}
+         */
+
     }, {
         key: 'first',
         value: function first() {
             return this._query[0];
         }
+
+        /**
+         *
+         * @returns {Entity}
+         */
+
     }, {
         key: 'get',
         value: function get(value) {

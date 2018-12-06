@@ -1,6 +1,11 @@
 const { Entity } = require('lilli')
 
 class Model extends Entity {
+
+    /**
+     *
+     * @param {Object} query
+     */
     constructor(query) {
         super(query)
 
