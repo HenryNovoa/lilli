@@ -5,7 +5,7 @@ class User extends Entity {
         super(query)
 
         this.id = query.id || Date.now()
-        this.username = query.username || Date.now()
+        this.username = query.username || null
     }
 }
 
